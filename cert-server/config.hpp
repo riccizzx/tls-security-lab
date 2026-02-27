@@ -20,5 +20,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-#endif
+#define CERT_PEM "cert.pem"
+#define KEY_PEM "key_pem"
 
+#endif

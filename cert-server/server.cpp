@@ -1,9 +1,15 @@
 
 #include "config.hpp"
 
-// ----------------------------------------------------
-// Utility: Print OpenSSL errors
-// ----------------------------------------------------
+bool start_winsock(WSADATA& wsa)
+{
+    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
+        return false;
+    }
+    return true;
+}
+
+// get openSSL errors
 void print_ssl_error(const char* msg)
 {
     std::cerr << msg << std::endl;
@@ -48,17 +54,21 @@ static void handle_request(evhttp_request* req, void*)
 
     const char* uri = evhttp_request_get_uri(req);
     const char* host = evhttp_request_get_host(req);
+    struct evbuffer* buf = evhttp_request_get_output_buffer(req);
+
+
 
     std::cout << "[+] Request received\n";
     std::cout << "    URI  : " << (uri ? uri : "null") << "\n";
     std::cout << "    Host : " << (host ? host : "null") << "\n";
+    std::cout << "    Buffer:" << (buf) << "\n";
 
     evbuffer_add_printf(reply,
         "<!DOCTYPE html>"
         "<html>"
         "<head><title>Libevent HTTPS</title></head>"
         "<body>"
-        "<h1>HTTPS Server Running on Windows</h1>"
+        "<h1>practice https using libevent/openssl</h1>"
         "</body>"
         "</html>");
 
@@ -85,27 +95,21 @@ static void signal_cb(evutil_socket_t, short, void* arg)
 // ----------------------------------------------------
 // MAIN
 // ----------------------------------------------------
+
 int main(int argc, char* argv[])
 {
+    WSADATA ws;
+  
     if (argc != 4)
     {
-        std::cout << "Usage: server.exe <port> <cert.pem> <key.pem>\n";
+        std::cout << "run bat file\n";
+        std::cout << "usage: cert-server.exe <port> <cert.pem> <key.pem>\n";
         return 1;
     }
+    
+    start_winsock(ws);
 
-    // ------------------------------------------------
-    // WinSock Initialization
-    // ------------------------------------------------
-    WSADATA wsa;
-    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-    {
-        std::cerr << "WSAStartup failed\n";
-        return 1;
-    }
-
-    // ------------------------------------------------
-    // OpenSSL Initialization (OpenSSL 1.1+/3.x safe)
-    // ------------------------------------------------
+    //openssl init/ (OpenSSL 1.1+/3.x safe)
     SSL_library_init();
     SSL_load_error_strings();
     OpenSSL_add_ssl_algorithms();
@@ -189,3 +193,4 @@ int main(int argc, char* argv[])
     std::cout << "[+] Server stopped cleanly\n";
     return 0;
 }
+
