@@ -21,11 +21,10 @@ The project's objective is to deepen the practical understanding of:
 
 Technologies used:
 -C++
--Libevent: https://github.com/libevent/libevent
--OpenSSL: https://github.com/openssl/openssl
+-Libevent
+-OpenSSL
 -Winsock (Windows)
--mkcert: https://github.com/FiloSottile/mkcert
-
+-mkcert
 
 CERTIFICATE:
 you can use the CA you want, in this case im using mkcert to generate private key and certificate.
@@ -34,3 +33,7 @@ include your certificates in debug and change them into .bat file.
 ```
 cert-server.exe <port> <certificate.pem> <key.pem>
 ```
+
+Libevent: https://github.com/libevent/libevent
+OpenSSL: https://github.com/openssl/openssl
+mkcert: https://github.com/FiloSottile/mkcert
