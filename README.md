@@ -1,9 +1,7 @@
 
 Experimental environment for studying TLS, applied cryptography, and network security.
 
-This project implement a https server in c++ using libevent and openSSL, for educational
-pourpousees and experimental analyzes in security protocols and cryptographic controlled enviroments.
-
+This project implements an HTTPS server in C++ using libevent and OpenSSL, for educational purposes and experimental analysis of security protocols and cryptographically controlled environments.
 
 The server allows:
 - Manual TLS implementation with OpenSSL
@@ -29,6 +27,8 @@ Technologies used:
 CERTIFICATE:
 you can use the CA you want, in this case im using mkcert to generate private key and certificate.
 include your certificates in debug and change them into .bat file.
+
+See the mkcert guide install, to generate the valid certficate and private-key
 
 ```
 cert-server.exe <port> <certificate.pem> <key.pem>
