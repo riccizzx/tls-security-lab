@@ -8,7 +8,7 @@ if not exist cert-server.exe (
 )
 
 echo Starting HTTPS server on port 8443...
-cert-server.exe 8443 cert.pem key.pem
+cert-server.exe 8443 localhost+2.pem localhost+2-key.pem
 
 if %errorlevel% neq 0 (
     echo Server crashed with error %errorlevel%

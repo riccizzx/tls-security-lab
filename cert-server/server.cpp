@@ -1,24 +1,7 @@
 
 #include "config.hpp"
 
-bool start_winsock(WSADATA& wsa)
-{
-    if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
-        return false;
-    }
-    return true;
-}
-
-// get openSSL errors
-void print_ssl_error(const char* msg)
-{
-    std::cerr << msg << std::endl;
-    ERR_print_errors_fp(stderr);
-}
-
-// ----------------------------------------------------
-// HTTPS bufferevent callback
-// ----------------------------------------------------
+// https buffer event callback
 static bufferevent* https_bev_cb(event_base* base, void* arg)
 {
     SSL_CTX* ctx = static_cast<SSL_CTX*>(arg);
@@ -40,9 +23,7 @@ static bufferevent* https_bev_cb(event_base* base, void* arg)
     return bev;
 }
 
-// ----------------------------------------------------
-// HTTP Request Handler
-// ----------------------------------------------------
+// https request handle
 static void handle_request(evhttp_request* req, void*)
 {
     if (!req)
@@ -56,13 +37,11 @@ static void handle_request(evhttp_request* req, void*)
     const char* host = evhttp_request_get_host(req);
     struct evbuffer* buf = evhttp_request_get_output_buffer(req);
 
-
-
     std::cout << "[+] Request received\n";
     std::cout << "    URI  : " << (uri ? uri : "null") << "\n";
     std::cout << "    Host : " << (host ? host : "null") << "\n";
     std::cout << "    Buffer:" << (buf) << "\n";
-
+    
     evbuffer_add_printf(reply,
         "<!DOCTYPE html>"
         "<html>"
@@ -82,9 +61,7 @@ static void handle_request(evhttp_request* req, void*)
     evbuffer_free(reply);
 }
 
-// ----------------------------------------------------
-// Signal Handler (Windows-friendly)
-// ----------------------------------------------------
+// sig handler
 static void signal_cb(evutil_socket_t, short, void* arg)
 {
     event_base* base = static_cast<event_base*>(arg);
@@ -92,21 +69,17 @@ static void signal_cb(evutil_socket_t, short, void* arg)
     event_base_loopbreak(base);
 }
 
-// ----------------------------------------------------
-// MAIN
-// ----------------------------------------------------
 
 int main(int argc, char* argv[])
 {
-    WSADATA ws;
-  
+
     if (argc != 4)
     {
-        std::cout << "run bat file\n";
         std::cout << "usage: cert-server.exe <port> <cert.pem> <key.pem>\n";
         return 1;
     }
-    
+
+    WSADATA ws;
     start_winsock(ws);
 
     //openssl init/ (OpenSSL 1.1+/3.x safe)
@@ -142,9 +115,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // ------------------------------------------------
-    // Libevent Setup
-    // ------------------------------------------------
+    // libevent setup
     event_base* base = event_base_new();
     if (!base)
     {
@@ -180,9 +151,7 @@ int main(int argc, char* argv[])
 
     event_base_dispatch(base);
 
-    // ------------------------------------------------
-    // Cleanup
-    // ------------------------------------------------
+    // close and cleanup
     evhttp_free(http);
     //event_free(sig);
     event_base_free(base);
@@ -192,5 +161,6 @@ int main(int argc, char* argv[])
 
     std::cout << "[+] Server stopped cleanly\n";
     return 0;
+
 }
 

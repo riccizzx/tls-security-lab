@@ -23,4 +23,9 @@
 #define CERT_PEM "cert.pem"
 #define KEY_PEM "key_pem"
 
+bool start_winsock(WSADATA& wsa);
+
+// get openSSL errors
+void print_ssl_error(const char* msg);
+
 #endif
