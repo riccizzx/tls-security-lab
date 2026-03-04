@@ -97,6 +97,7 @@ int main(int argc, char* argv[])
     // Enforce TLS 1.2+
     SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
 
+    
     if (SSL_CTX_use_certificate_file(ctx, argv[2], SSL_FILETYPE_PEM) <= 0)
     {
         print_ssl_error("Loading certificate failed");
@@ -113,8 +114,8 @@ int main(int argc, char* argv[])
     {
         std::cerr << "Private key does not match certificate\n";
         return 1;
-    }
-
+    }    
+    
     // libevent setup
     event_base* base = event_base_new();
     if (!base)
@@ -129,7 +130,7 @@ int main(int argc, char* argv[])
         std::cerr << "evhttp_new failed\n";
         return 1;
     }
-
+    
     evhttp_set_bevcb(http, https_bev_cb, ctx);
     evhttp_set_gencb(http, handle_request, nullptr);
 
@@ -148,6 +149,9 @@ int main(int argc, char* argv[])
     //event_add(sig, nullptr);
 
     std::cout << "[+] HTTPS Server running on port " << port << "\n";
+
+    // handle forgein client request
+    
 
     event_base_dispatch(base);
 
