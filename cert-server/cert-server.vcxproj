@@ -126,6 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="handler.cpp" />
     <ClCompile Include="server.cpp" />
     <ClCompile Include="init.cpp" />
   </ItemGroup>
